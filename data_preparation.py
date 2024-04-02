@@ -1,11 +1,13 @@
 import requests
 import pandas as pd
 import numpy as np
+import util_function
+import config_param
 from datetime import datetime
 
 URL  = 'https://healthdata.gov/api/views/g62h-syeh/rows.csv?accessType=DOWNLOAD'
 
-response = requests.get(sel_url)
+response = requests.get(URL)
 with open('dummy.csv', 'wb') as f:
     f.write(response.content)
 hosp_tab = pd.read_csv('dummy.csv')
@@ -42,11 +44,11 @@ print(location_to_abbreviation)
 location_mapper = location_to_abbreviation
 
 hosp_tab['date'] = pd.to_datetime(hosp_tab['date'], format='%Y/%m/%d')
-all_days = (hosp_tab['date'] - zero_date).dt.days
+all_days = (hosp_tab['date'] - config_param.zero_date).dt.days
 bad_idx = all_days <= 0
 hosp_tab = hosp_tab[~bad_idx]
 all_days = all_days[~bad_idx]
-maxt = all_days.max() - days_back
+maxt = all_days.max() - config_param.days_back
 
 fips = [None] * ns
 hosp_dat = pd.DataFrame(index=range(ns), columns=range(maxt))
@@ -75,7 +77,24 @@ for idx in range(len(hosp_tab)):
             hosp_dat.at[cid, date_idx-1] = hosp_tab.iloc[idx]['previous_day_admission_influenza_confirmed']
             hosp_cov[cid, date_idx-1] = hosp_tab.iloc[idx]['previous_day_admission_influenza_confirmed_coverage']
 
+days = maxt
+T_full = max(np.where(np.any(~hosp_dat.isna(), axis=0))[0])
+hosp_cumu = np.nancumsum(np.nan_to_num(hosp_dat), axis=1)
+    # Modify the next line as necessary to match your function signature and operation
+reshaped_hosp_cov = hosp_cov[:, T_full].reshape(-1, 1)
+# Now perform element-wise multiplication and division
+hosp_cumu_s = util_function.smooth_epidata(
+        np.nancumsum(
+            hosp_dat.iloc[:, :T_full+1].values * reshaped_hosp_cov / (hosp_cov[:, :T_full+1] + 1e-10), 
+            axis=1, dtype=float
+        ), 
+        config_param.smooth_factor, 0, config_param.bin_size/7)
+# update smooth epidata param - weekly 0,0 / 
+hosp_cumu_s_org = hosp_cumu_s[:, :days]  
+hosp_cumu_org = hosp_cumu[:, :days]  
 
-np.savetxt('hosp_cov.csv', hosp_cov, delimiter=',')
+hosp_dat = hosp_dat[:,:days]
+np.savetxt('hosp_cumu_s.csv', hosp_cumu_s_org, delimiter=',')
+#hosp_cumu_org.to_csv('hosp_cumu.csv', index=False)
 hosp_dat.to_csv('hosp_dat.csv', index=False)
 
