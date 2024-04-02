@@ -17,8 +17,8 @@ season_start_day = (season_start - season_end).days
 ########################### HyperParameters
 ###%%%%%%%TO ADD %%%%%%%%%%%%%%%%%%%%%
 # predictor_models = ["var_ind_beta_un", "var_simulate_pred_un"]
-# hyper_params.p1 = [...]
-# hyper_params.p2 = [...]
+# pred_hyper_params.p1 = [...]
+# pred_hyper_params.p2 = [...]
 # ...
 
 
@@ -37,6 +37,13 @@ npredictors = (len(S) * len(halpha_list) * len(un_list) * len(rlag_list))*(weeks
 horizon = (weeks_ahead+1)*bin_size 
 
 ######################## regress
+###%%%%%%%TO ADD %%%%%%%%%%%%%%%%%%%%%
+# ens_model = ["RandomQuantileRegressor"]
+# ens_hyper_params.p1 = [...]
+# ens_hyper_params.p2 = [...]
+# ...
+
+
 decay_factor = 0.99
 wks_back = 1
 default_n_estimators = 100
