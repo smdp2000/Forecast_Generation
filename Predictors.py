@@ -2,9 +2,11 @@ import pandas as pd
 import numpy as np
 import config_param
 from math import ceil
-from util_function import smooth_epidata, var_ind_beta_un, var_simulate_pred_un
+from util_function import smooth_epidata
 from itertools import product
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from var_ind_beta_un import *
+from var_simulate_pred_un import *
 
 
 
