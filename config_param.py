@@ -15,6 +15,14 @@ season_end = zero_date
 season_start_day = (season_start - season_end).days
 
 ########################### HyperParameters
+###%%%%%%%TO ADD %%%%%%%%%%%%%%%%%%%%%
+# predictor_models = ["var_ind_beta_un", "var_simulate_pred_un"]
+# hyper_params.p1 = [...]
+# hyper_params.p2 = [...]
+# ...
+
+
+##############################
 rlags = np.array([0, 7])
 rlag_list = np.arange(1, len(rlags) + 1)
 un_list = np.array([1, 2, 3])
