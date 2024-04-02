@@ -13,9 +13,9 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 parser = argparse.ArgumentParser(description='Load CSV files and population data for regression analysis.')
 
 # Add arguments for the CSV file paths 
-parser.add_argument('pedili_old_path', type=str, help='Path to the PedILI_Old.csv file')
-parser.add_argument('hh_path', type=str, help='Path to the Hh.csv file')
-parser.add_argument('popu_path', type=str, help='Path to the us_states_population_data.txt file')
+parser.add_argument('pedili_old_path', type=str, help='Path to the Pedictors file')
+parser.add_argument('hh_path', type=str, help='Path to the Hospitalizations file')
+parser.add_argument('popu_path', type=str, help='Path to the us_states_population_data file')
 
 # Parse the command line arguments
 args = parser.parse_args()
@@ -191,7 +191,8 @@ for model_num in range(1, num_models+1):
     start_col = end_col + 1
 #
 
-
+#Parrallization
+"""
 # Assuming quantiles, data_test, and trained_models_dict are defined as before
 
 start_col = config_param.bin_size
@@ -238,7 +239,7 @@ if __name__ == '__main__':
     if error_messages:
         for error in error_messages:
             print(error)
-
+"""
 #---- AGGREGATION
 
 pred_dict = {}
@@ -301,7 +302,7 @@ Ti = pd.DataFrame({
 })
 
 # Prepare the table Tm for pmf predictions
-temp = pmf[0:56, :, :]
+temp = pmf[0:num_states, :, :]
 idx = np.argmax(pmf, axis=1, keepdims=True)
 thesevals = temp.flatten()
 cid, class_, wh = np.unravel_index(range(len(thesevals)), pmf.shape)
