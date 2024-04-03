@@ -261,7 +261,7 @@ for model_key in mpgQuartiles_dict:
 
 #---- OUTPUT FORMAT
 thisday = days - config_param.bin_size*(config_param.wks_back-1)
-    
+#SET INput in config param
 quant_deaths = np.array([0.01, 0.025] + list(np.arange(0.05, 1.0, 0.05)) + [0.975, 0.99])
 
 # Initialize the arrays for storing quantile and mean predictions
@@ -294,7 +294,7 @@ Ti = pd.DataFrame({
     'reference_date': [(config_param.zero_date + timedelta(days=thisday + config_param.bin_size)).strftime('%Y-%m-%d')] * len(thesevals),
     'horizon': wh - 2,
     'target': ['wk inc flu hosp'] * len(thesevals),
-    'target_end_date': [(config_param.zero_date + timedelta(days=thisday + config_param.bin_size + 7 * (w - 2))).strftime('%Y-%m-%d') for w in wh],
+    'target_end_date': [(config_param.zero_date + timedelta(days=thisday + config_param.bin_size + bin_size * (w))).strftime('%Y-%m-%d') for w in wh],
     'location': [fips[c] for c in cid],
     'output_type': ['quantile'] * len(thesevals),
     'output_type_id': quant_deaths[qq],
@@ -310,7 +310,7 @@ classes = ["stable", "increase", "large_increase", "decrease", "large_decrease"]
 
 Tm = pd.DataFrame({
     'reference_date': [(config_param.zero_date + timedelta(days=thisday + config_param.bin_size)).strftime('%Y-%m-%d')] * len(thesevals),
-    'horizon': wh - 2,
+    'horizon': wh,
     'target': ['wk flu hosp rate change'] * len(thesevals),
     'target_end_date': [(config_param.zero_date + timedelta(days=thisday + config_param.bin_size + 7 * (w - 2))).strftime('%Y-%m-%d') for w in wh],
     'location': [fips[c] for c in cid],
