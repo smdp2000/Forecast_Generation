@@ -134,9 +134,16 @@ for x in range(wks, -1, -1):
 
 
 predT = predT[:, :, 1:]
+first = np.full((56, 11, config_param.weeks_ahead), np.nan)
+
+predT = np.concatenate((first, predT), axis=2)
+
+predILI = pd.DataFrame()
+for i in range(56):  
+    temp_df = pd.DataFrame(predT[:, i, :min(maxt, predT.shape[2])].T)
+    predILI = pd.concat([predILI, temp_df], ignore_index=True)
 
 """ To FIX
-first = np.full((56, 11, config_param.weeks_ahead), np.nan)
 predictor_size = int(config_param.npredictors/config_param.num_dh_rates_sample)
 
 for i in range(config_param.weeks_ahead):
@@ -151,11 +158,4 @@ for i in range(5):
 
 tempf = np.transpose(tempf, (2, 0, 1))
 
-predT = np.concatenate((tempf, predT), axis=2)
-
-
-predILI = pd.DataFrame()
-for i in range(56):  
-    temp_df = pd.DataFrame(predT[:, i, :min(maxt, predT.shape[2])].T)
-    predILI = pd.concat([predILI, temp_df], ignore_index=True)
 """
